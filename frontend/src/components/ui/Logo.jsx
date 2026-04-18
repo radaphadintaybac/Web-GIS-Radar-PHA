@@ -9,9 +9,9 @@ const Logo = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
       <img className="flex size-18 shrink-0" src={LogoImg}></img>
 
       <h1
-        className={`overflow-hidden text-xl font-bold tracking-tight whitespace-nowrap text-gray-900 transition-all duration-500 dark:text-white ${isSidebarOpen || isMobileMenuOpen ? "opacity-100" : "opacity-0"}`}
+        className={`overflow-hidden text-lg font-bold tracking-tight whitespace-nowrap text-gray-900 transition-all duration-500 dark:text-white ${isSidebarOpen || isMobileMenuOpen ? "opacity-100" : "opacity-0"}`}
       >
-        RA ĐA <span class="font-bold text-indigo-600">PHA ĐIN</span>
+        RA ĐA <span className="font-bold text-indigo-600">PHA ĐIN</span>
       </h1>
 
       <Button

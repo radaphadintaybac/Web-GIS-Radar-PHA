@@ -8,7 +8,7 @@ const SideBar = ({
   isMobileMenuOpen,
   setIsMobileMenuOpen,
   selections,
-  setSeclections,
+  setSelections,
 }) => {
   return (
     <>
@@ -33,7 +33,7 @@ const SideBar = ({
           isSidebarOpen={isSidebarOpen}
           isMobileMenuOpen={isMobileMenuOpen}
           selections={selections}
-          setSeclections={setSeclections}
+          setSelections={setSelections}
         />
       </aside>
     </>

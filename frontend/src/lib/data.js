@@ -9,16 +9,17 @@ import {
   Code,
   Cpu,
   Compass,
+  SatelliteDish
 } from "lucide-react";
 
 export const defaultSelections = {
-  project: {
-    name: "Dự án Alpha",
-    icon: Zap,
+  stations: {
+    name: "Pha Đin",
+    icon: SatelliteDish,
     color: "text-amber-400",
   },
-  env: {
-    name: "Production",
+  products: {
+    name: "MAX",
     icon: Server,
     color: "text-blue-500",
   },
@@ -36,42 +37,42 @@ export const defaultSelections = {
 
 export const dropdownConfigs = [
   {
-    id: "project",
-    label: "Dự án",
+    id: "stations",
+    label: "Trạm Ra đa thời tiết",
     options: [
       {
-        name: "Dự án Alpha",
-        icon: Zap,
+        name: "Pha Đin",
+        icon: SatelliteDish,
         color: "text-amber-400",
       },
       {
-        name: "Bảo mật",
+        name: "Việt Trì",
         icon: ShieldCheck,
         color: "text-emerald-400",
       },
       {
-        name: "Thị trường",
+        name: "Phù Liễn",
         icon: Globe,
         color: "text-blue-400",
       },
     ],
   },
   {
-    id: "env",
-    label: "Môi trường",
+    id: "products",
+    label: "Sản phẩm",
     options: [
       {
-        name: "Production",
+        name: "MAX",
         icon: Server,
         color: "text-blue-500",
       },
       {
-        name: "Staging",
+        name: "HMAX",
         icon: Activity,
         color: "text-purple-500",
       },
       {
-        name: "Development",
+        name: "VIL",
         icon: Code,
         color: "text-slate-500",
       },
