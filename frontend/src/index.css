@@ -6,7 +6,18 @@
 }
 
 @layer base {
-    button {
-        cursor: pointer;
-    }
+  button {
+    cursor: pointer;
+  }
+}
+
+.leaflet-control-layers-toggle {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.leaflet-popup-content {
+  color: var(--color-indigo-500);
+  text-align: center;
+  font-weight: 500;
 }

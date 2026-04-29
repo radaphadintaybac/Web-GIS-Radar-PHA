@@ -11,7 +11,9 @@ const Logo = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
       <h1
         className={`overflow-hidden text-lg font-bold tracking-tight whitespace-nowrap text-gray-900 transition-all duration-500 dark:text-white ${isSidebarOpen || isMobileMenuOpen ? "opacity-100" : "opacity-0"}`}
       >
-        RA ĐA <span className="font-bold text-indigo-600">PHA ĐIN</span>
+        <span className="bg-linear-to-r from-indigo-600 to-[oklch(45%_0.22_290)] bg-clip-text font-sans text-lg font-bold tracking-wide text-transparent">
+          RA ĐA PHA ĐIN
+        </span>
       </h1>
 
       <Button

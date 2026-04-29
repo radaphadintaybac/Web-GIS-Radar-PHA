@@ -1,37 +1,21 @@
 import {
-  Zap,
   Server,
-  Palette,
   MapPin,
-  ShieldCheck,
-  Globe,
-  Activity,
-  Code,
-  Cpu,
-  Compass,
-  SatelliteDish
+  SatelliteDish,
+  MousePointerClick,
+  Newspaper,
+  Settings,
 } from "lucide-react";
 
 export const defaultSelections = {
   stations: {
     name: "Pha Đin",
-    icon: SatelliteDish,
-    color: "text-amber-400",
   },
   products: {
     name: "MAX",
-    icon: Server,
-    color: "text-blue-500",
-  },
-  team: {
-    name: "Design Team",
-    icon: Palette,
-    color: "text-pink-500",
   },
   region: {
-    name: "Châu Á (APAC)",
-    icon: MapPin,
-    color: "text-emerald-500",
+    name: "Sơn La",
   },
 };
 
@@ -39,75 +23,66 @@ export const dropdownConfigs = [
   {
     id: "stations",
     label: "Trạm Ra đa thời tiết",
+    icon: SatelliteDish,
+    iconColor: "text-amber-400",
     options: [
       {
         name: "Pha Đin",
-        icon: SatelliteDish,
-        color: "text-amber-400",
+        location: [21.57139, 103.51694],
       },
       {
         name: "Việt Trì",
-        icon: ShieldCheck,
-        color: "text-emerald-400",
+        location: [21.41944, 105.30472],
       },
       {
         name: "Phù Liễn",
-        icon: Globe,
-        color: "text-blue-400",
+        location: [20.809, 106.64],
       },
     ],
   },
   {
     id: "products",
     label: "Sản phẩm",
+    icon: Server,
+    iconColor: "text-blue-500",
     options: [
       {
         name: "MAX",
-        icon: Server,
-        color: "text-blue-500",
       },
       {
         name: "HMAX",
-        icon: Activity,
-        color: "text-purple-500",
       },
       {
         name: "VIL",
-        icon: Code,
-        color: "text-slate-500",
-      },
-    ],
-  },
-  {
-    id: "team",
-    label: "Đội ngũ",
-    options: [
-      {
-        name: "Design Team",
-        icon: Palette,
-        color: "text-pink-500",
-      },
-      {
-        name: "Engineering",
-        icon: Cpu,
-        color: "text-indigo-500",
       },
     ],
   },
   {
     id: "region",
-    label: "Khu vực",
+    label: "Tình thành",
+    icon: MapPin,
+    iconColor: "text-emerald-500",
     options: [
       {
-        name: "Châu Á (APAC)",
-        icon: MapPin,
-        color: "text-emerald-500",
+        name: "Sơn La",
       },
       {
-        name: "Bắc Mỹ (NA)",
-        icon: Compass,
-        color: "text-rose-500",
+        name: "Điện Biên",
+      },
+      {
+        name: "Lai Châu",
       },
     ],
   },
+];
+
+export const buttonNavItems = [
+  {
+    name: "Con trỏ",
+    icon: MousePointerClick,
+    active: true,
+  },
+  { name: "Bản tin", icon: Newspaper, active: false },
+
+  { name: "Cài đặt", icon: Settings, active: false },
 ];
