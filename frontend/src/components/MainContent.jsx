@@ -42,7 +42,6 @@ const MainContent = () => {
 
         setProvincesData(provData);
         setDistrictsData(distData);
-        
       } catch (error) {
         console.error("Lỗi tải dữ liệu không gian:", error);
       }
@@ -129,7 +128,7 @@ const MainContent = () => {
   );
   // const position = [21.328, 103.91];
   return (
-    <main className="z-30 flex w-full flex-1 overflow-y-auto">
+    <main className="z-30 flex flex-1 w-full overflow-y-auto">
       <MapContainer
         center={[21.57139, 103.51694]}
         zoom={7}
@@ -140,7 +139,7 @@ const MainContent = () => {
         wheelPxPerZoomLevel={120}
         maxBounds={boundsNorthVN}
         scrollWheelZoom={true}
-        className="h-full w-full"
+        className="w-full h-full"
         zoomControl={false}
       >
         <ZoomControl position="topright" />
@@ -154,7 +153,7 @@ const MainContent = () => {
         {/* Chèn các layer tĩnh đã được đóng băng */}
         {staticMapLayers}
 
-        <AnimationProduct></AnimationProduct>
+        {provincesData && <AnimationProduct />}
       </MapContainer>
     </main>
   );

@@ -12,10 +12,10 @@ export const defaultSelections = {
     name: "Pha Đin",
   },
   products: {
-    name: "MAX",
+    name: "HMAX",
   },
   region: {
-    name: "Sơn La",
+    name: "Tất cả",
   },
 };
 
@@ -29,14 +29,17 @@ export const dropdownConfigs = [
       {
         name: "Pha Đin",
         location: [21.57139, 103.51694],
+        status: "active",
       },
       {
         name: "Việt Trì",
         location: [21.41944, 105.30472],
+        status: "deactive",
       },
       {
         name: "Phù Liễn",
         location: [20.809, 106.64],
+        status: "deactive",
       },
     ],
   },
@@ -48,12 +51,15 @@ export const dropdownConfigs = [
     options: [
       {
         name: "MAX",
+        status: "active",
       },
       {
         name: "HMAX",
+        status: "active",
       },
       {
         name: "VIL",
+        status: "deactive",
       },
     ],
   },
@@ -64,13 +70,20 @@ export const dropdownConfigs = [
     iconColor: "text-emerald-500",
     options: [
       {
+        name: "Tất cả",
+        status: "active",
+      },
+      {
         name: "Sơn La",
+        status: "deactive",
       },
       {
         name: "Điện Biên",
+        status: "deactive",
       },
       {
         name: "Lai Châu",
+        status: "deactive",
       },
     ],
   },

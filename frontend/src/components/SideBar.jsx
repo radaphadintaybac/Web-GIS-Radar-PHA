@@ -1,20 +1,14 @@
-import React from "react";
-import {LogOut} from "lucide-react"
+import React, { useState } from "react";
+import { LogOut } from "lucide-react";
 import Navigation from "./ui/Navigation";
 import Logo from "./ui/Logo";
 
-const SideBar = ({
-  isSidebarOpen,
-  isMobileMenuOpen,
-  setIsMobileMenuOpen,
-  selections,
-  setSelections,
-}) => {
+const SideBar = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
   return (
     <>
       {isMobileMenuOpen && (
         <div
-          className="animate-in fade-in fixed inset-0 z-45 bg-black/60 backdrop-blur-sm transition-opacity duration-300 md:hidden"
+          className="fixed inset-0 transition-opacity duration-300 animate-in fade-in z-45 bg-black/60 backdrop-blur-sm md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -32,8 +26,6 @@ const SideBar = ({
         <Navigation
           isSidebarOpen={isSidebarOpen}
           isMobileMenuOpen={isMobileMenuOpen}
-          selections={selections}
-          setSelections={setSelections}
         />
 
         <div className="border-t border-gray-100 bg-white p-4 dark:border-slate-800 dark:bg-[#1e293b]">

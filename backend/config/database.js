@@ -11,8 +11,6 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-console.log('Hệ thống Database Pool đã sẵn sàng');
-
 pool.on("error", (err) => {
   console.error("Lỗi kết nối Database ", err);
   process.exit(-1);

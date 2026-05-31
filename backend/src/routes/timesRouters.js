@@ -1,5 +1,5 @@
 import express, { response } from "express";
-import { getTimes } from "../controllers/timeControllerV2.js";
+import { getTimes } from "../controllers/timeControllers.js";
 
 const router = express.Router();
 

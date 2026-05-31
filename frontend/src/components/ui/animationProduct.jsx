@@ -1,134 +1,240 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { WMSTileLayer } from "react-leaflet";
+import L from "leaflet";
 import {
-  MapContainer,
-  TileLayer,
-  WMSTileLayer,
-  LayersControl,
-} from "react-leaflet";
-import api from "../../lib/axios";
-import "leaflet/dist/leaflet.css";
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Clock,
+  ChevronDown,
+} from "lucide-react";
+import { useSelection } from "../context/SelectionContext";
 
 const AnimationProduct = () => {
-  // 1. States quản lý dữ liệu và animation
-  const [timestamps, setTimestamps] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [timeline, setTimeline] = useState({ list: [], index: 0 });
   const [isPlaying, setIsPlaying] = useState(false);
-
-  // Dùng Ref để lưu timer tránh việc render lại làm mất dấu timer
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const animationRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const { selections } = useSelection();
 
-  // 2. Hàm Fetch dữ liệu từ API
-  const fetchTimestamps = async () => {
-    try {
-      const response = await api.get("/time");
-      // API trả về data time nhất đứng đầu
-      const data = response.data;
-
-      setTimestamps((prev) => {
-        // Nếu có dữ liệu mới, cập nhật và giữ nguyên vị trí index nếu đang xem
-        // Hoặc nhảy đến cuối nếu là lần đầu
-        if (prev.length === 0) setCurrentIndex(data.length - 1);
-        return data;
-      });
-      console.log(
-        "Dữ liệu radar đã được cập nhật mới nhất:",
-        data[data.length - 1],
-      );
-    } catch (error) {
-      console.error("Lỗi fetch time:", error);
-    }
-  };
-
+  let product = selections.products.name;
+  
   useEffect(() => {
-    // 1. Chạy ngay lập tức lần đầu khi load trang
-    fetchTimestamps();
+    const eventSource = new EventSource(
+      `http://localhost:5001/api/time?product=${product}`,
+    );
 
-    // 2. Thiết lập vòng lặp kiểm tra mỗi phút (Check mỗi 60 giây)
-    const checkTimeInterval = setInterval(() => {
-      const now = new Date();
-      const minutes = now.getMinutes(); // Lấy phút hiện tại (0-59)
-      console.log("check time ...")
-      // 3. Logic: Kiểm tra nếu số phút kết thúc bằng 3 (03, 13, 23, 33, 43, 53)
-      // Cách viết gọn: minutes % 10 === 3
-      if (minutes % 10 === 3) {
-        console.log(
-          `Đã đến thời điểm vàng (${minutes}ph), đang cập nhật dữ liệu radar mới...`,
-        );
-        fetchTimestamps();
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        // Trường hợp 1: Nhận dữ liệu khởi tạo (danh sách 6 mốc)
+        if (data.timestamps) {
+          console.log(`Dữ liệu khởi tạo cho [${product}]:`, data.timestamps);
+          setTimeline({
+            list: data.timestamps,
+            index: data.timestamps.length - 1,
+          });
+        }
+        // Trường hợp 2: Nhận cập nhật mốc thời gian mới duy nhất
+        else if (data.newTimestamp) {
+          console.log(`Cập nhật mốc mới cho [${product}]:`, data.newTimestamp);
+          setTimeline((prev) => {
+            if (prev.list.includes(data.newTimestamp)) return prev;
+
+            const newList = [...prev.list, data.newTimestamp].slice(-6);
+            let newIndex = prev.index;
+
+            if (prev.index === prev.list.length - 1) {
+              newIndex = newList.length - 1;
+            } else {
+              newIndex = Math.max(0, prev.index - 1);
+            }
+
+            return { list: newList, index: newIndex };
+          });
+        }
+      } catch (err) {
+        console.error("Lỗi parse dữ liệu SSE:", err);
       }
-    }, 60 * 1000); // Kiểm tra mỗi 1 phút một lần
+    };
 
-    // 4. Cleanup để tránh rác bộ nhớ
-    return () => clearInterval(checkTimeInterval);
+    eventSource.onerror = (err) => {
+      console.error("Lỗi kết nối SSE:", err);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+      console.log(`Đã ngắt kết nối SSE cho sản phẩm: ${product}`);
+    };
+  }, [product]);
+
+  // Logic chạy Animation
+  useEffect(() => {
+    if (isPlaying && timeline.list.length > 0) {
+      animationRef.current = setInterval(() => {
+        setTimeline((prev) => ({
+          ...prev,
+          index: prev.index >= prev.list.length - 1 ? 0 : prev.index + 1,
+        }));
+      }, 800); 
+    } else {
+      clearInterval(animationRef.current);
+    }
+    return () => clearInterval(animationRef.current);
+  }, [isPlaying, timeline.list]);
+
+  // Xử lý click ra ngoài để đóng dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  // 4. Logic chạy Animation
-  // useEffect(() => {
-  //   if (isPlaying && timestamps.length > 0) {
-  //     animationRef.current = setInterval(() => {
-  //       setCurrentIndex((prevIndex) =>
-  //         prevIndex >= timestamps.length - 1 ? 0 : prevIndex + 1,
-  //       );
-  //     }, 1000);
-  //   } else {
-  //     clearInterval(animationRef.current);
-  //   }
-  //   return () => clearInterval(animationRef.current);
-  // }, [isPlaying, timestamps]);
+  const handleNext = () => {
+    setIsPlaying(false);
+    setTimeline((prev) => ({
+      ...prev,
+      index: (prev.index + 1) % prev.list.length,
+    }));
+  };
+
+  const handlePrev = () => {
+    setIsPlaying(false);
+    setTimeline((prev) => ({
+      ...prev,
+      index: (prev.index - 1 + prev.list.length) % prev.list.length,
+    }));
+  };
+
+  const formatTime = (time) => {
+    return new Date(time).toLocaleString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  if (timeline.list.length === 0) return null;
 
   return (
     <>
-      {timestamps.length > 0 && (
-        <WMSTileLayer
-          key={timestamps[currentIndex]} // Key thay đổi buộc Leaflet render lại Layer mà không bị lưu cache cũ
-          url="https://radarphadin.com.vn/geoserver/radar/gwc/service/wms"
-          params={{
-            layers: "radar:max_mosaic_index",
-            format: "image/png",
-            transparent: true,
-            version: "1.1.1",
-            // Tham số quan trọng nhất: Gửi mốc thời gian tương ứng với currentIndex
-            time: timestamps[currentIndex],
-            pane: "paneRadar",
-            crs: L.CRS.EPSG3857,
-          }}
-        
-        />
-      )}
+      <WMSTileLayer
+        key={`${product}-${timeline.list[timeline.index]}`}
+        url="https://radarphadin.com.vn/geoserver/radar/gwc/service/wms"
+        params={{
+          layers: `radar:${product.toLowerCase()}_mosaic_index`,
+          format: "image/png",
+          transparent: true,
+          version: "1.1.1",
+          time: timeline.list[timeline.index],
+          pane: "paneRadar",
+          crs: L.CRS.EPSG3857,
+        }}
+      />
+      {console.log("render animation")}
+      {/* Giao diện điều khiển Animation */}
+      <div className="absolute top-2 right-15 z-1000 w-[90%] max-w-70 md:w-80">
+        <div className="p-4 border shadow-2xl rounded-3xl border-slate-200 bg-white/90 backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/90">
+          {/* Dropdown chọn thời gian */}
+          <div className="relative mb-4" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-100 p-2.5 transition-all hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700/80"
+            >
+              <div className="text-indigo-600 shrink-0 dark:text-indigo-400">
+                <Clock size={18} />
+              </div>
+              <span className="flex-1 text-left text-[13px] font-bold text-slate-700 dark:text-slate-200">
+                {formatTime(timeline.list[timeline.index])}
+              </span>
+              <ChevronDown
+                size={16}
+                className={`text-slate-400 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
+              />
+            </button>
 
-      {/* Bảng điều khiển Animation (UI Overlay) */}
-      {/* <div className="absolute flex flex-col items-center p-4 transform -translate-x-1/2 bg-white rounded-lg shadow-lg bottom-10 left-1/2 z-1000 min-w-100">
-        <div className="mb-2 font-bold text-blue-700">
-          🕒 Thời gian:{" "}
-          {timestamps[currentIndex]
-            ? new Date(timestamps[currentIndex]).toLocaleString("vi-VN")
-            : "Đang tải..."}
+            {/* Menu sổ xuống (Custom List) */}
+            {isDropdownOpen && (
+              <div className="animate-in fade-in slide-in-from-top-2 absolute top-full left-0 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-indigo-500/10 duration-200 dark:border-slate-700 dark:bg-slate-900">
+                {timeline.list.map((time, idx) => (
+                  <button
+                    key={time}
+                    onClick={() => {
+                      setTimeline((prev) => ({ ...prev, index: idx }));
+                      setIsPlaying(false);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors ${
+                      timeline.index === idx
+                        ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400"
+                        : "text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    <span
+                      className={
+                        timeline.index === idx
+                          ? "font-bold text-indigo-600 dark:text-indigo-400"
+                          : "font-medium"
+                      }
+                    >
+                      {formatTime(time)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Nút điều khiển */}
+          <div className="flex items-center justify-between gap-2">
+            <button
+              onClick={handlePrev}
+              className="flex flex-1 items-center justify-center rounded-2xl bg-slate-100 p-2.5 text-slate-600 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              title="Về trước"
+            >
+              <SkipBack size={18} fill="currentColor" />
+            </button>
+
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className={`flex flex-2 items-center justify-center gap-2 rounded-2xl p-2.5 font-bold shadow-lg transition-all ${
+                isPlaying
+                  ? "bg-rose-500 text-white shadow-rose-500/20 hover:bg-rose-600 active:scale-95"
+                  : "bg-indigo-600 text-white shadow-indigo-600/20 hover:bg-indigo-700 active:scale-95"
+              }`}
+            >
+              {isPlaying ? (
+                <Pause size={18} fill="currentColor" />
+              ) : (
+                <Play size={18} fill="currentColor" />
+              )}
+              <span className="text-sm">{isPlaying ? "Dừng" : "Phát"}</span>
+            </button>
+
+            <button
+              onClick={handleNext}
+              className="flex flex-1 items-center justify-center rounded-2xl bg-slate-100 p-2.5 text-slate-600 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              title="Tiếp theo"
+            >
+              <SkipForward size={18} fill="currentColor" />
+            </button>
+          </div>
         </div>
-
-        <div className="flex items-center w-full gap-4">
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className={`rounded px-4 py-2 ${isPlaying ? "bg-red-500" : "bg-green-500"} text-white`}
-          >
-            {isPlaying ? "Dừng" : "Chạy"}
-          </button>
-
-          <input
-            type="range"
-            className="grow"
-            min="0"
-            max={timestamps.length - 1}
-            value={currentIndex}
-            onChange={(e) => setCurrentIndex(parseInt(e.target.value))}
-          />
-
-          <span className="text-xs text-gray-500">
-            {currentIndex + 1} / {timestamps.length}
-          </span>
-        </div>
-      </div> */}
+      </div>
     </>
   );
 };
-
 export default AnimationProduct;
