@@ -15,7 +15,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useState, useRef, useEffect, useMemo } from "react";
-import AnimationProduct from "./ui/AnimationProduct";
+import ProductLayer from "./ui/ProductLayer";
 
 const boundsNorthVN = L.latLngBounds([17.7, 101.5], [25.2, 108.0]);
 
@@ -128,7 +128,7 @@ const MainContent = () => {
   );
   // const position = [21.328, 103.91];
   return (
-    <main className="z-30 flex flex-1 w-full overflow-y-auto">
+    <main className="z-30 flex min-h-0 w-full flex-1 overflow-hidden">
       <MapContainer
         center={[21.57139, 103.51694]}
         zoom={7}
@@ -139,7 +139,7 @@ const MainContent = () => {
         wheelPxPerZoomLevel={120}
         maxBounds={boundsNorthVN}
         scrollWheelZoom={true}
-        className="w-full h-full"
+        className="h-full w-full"
         zoomControl={false}
       >
         <ZoomControl position="topright" />
@@ -153,10 +153,11 @@ const MainContent = () => {
         {/* Chèn các layer tĩnh đã được đóng băng */}
         {staticMapLayers}
 
-        {provincesData && <AnimationProduct />}
+        {provincesData && <ProductLayer />}
       </MapContainer>
+      {console.log("main-content render")}
     </main>
   );
 };
 
-export default MainContent;
+export default React.memo(MainContent);

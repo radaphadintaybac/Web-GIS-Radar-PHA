@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useMemo } from "react";
 import { defaultSelections } from "../../lib/data.js";
 
 const SelectionContext = createContext();
@@ -6,9 +6,12 @@ const SelectionContext = createContext();
 export const SelectionProvider = ({ children }) => {
   const [selections, setSelections] = useState(defaultSelections);
 
+  const value = useMemo(() => ({ selections, setSelections }), [selections]);
+
   return (
-    <SelectionContext.Provider value={{ selections, setSelections }}>
+    <SelectionContext.Provider value={value}>
       {children}
+      {console.log("render Selection-context")}
     </SelectionContext.Provider>
   );
 };

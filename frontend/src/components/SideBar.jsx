@@ -23,6 +23,7 @@ const SideBar = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
           setIsMobileMenuOpen={setIsMobileMenuOpen}
         />
         {/* Navigation */}
+        {console.log("render sidebar")}
         <Navigation
           isSidebarOpen={isSidebarOpen}
           isMobileMenuOpen={isMobileMenuOpen}
