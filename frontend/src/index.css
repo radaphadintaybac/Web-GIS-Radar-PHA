@@ -21,3 +21,7 @@
   text-align: center;
   font-weight: 500;
 }
+
+.leaflet-container {
+  font-family: var(--font-jakarta) !important;
+}
