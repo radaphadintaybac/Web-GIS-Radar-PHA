@@ -1,30 +1,13 @@
-import React from "react";
 import { Menu, Search, Sun, Bell, Moon, LogIn } from "lucide-react";
 import Button from "./ui/Button";
-import { useState, useEffect } from "react";
+
 const Header = ({
   isSidebarOpen,
   setIsSidebarOpen,
-  isMobileMenuOpen,
   setIsMobileMenuOpen,
+  isDarkMode,
+  setIsDarkMode,
 }) => {
-  // Khởi tạo state từ localStorage hoặc cấu hình hệ thống
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) return savedTheme === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
-  // Đồng bộ class "dark" vào thẻ html và lưu vào localStorage
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDarkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
   return (
     <header className="z-30 flex h-17 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 transition-colors md:px-6 dark:border-slate-800 dark:bg-[#4a5361] dark:backdrop-blur-md">
       {/* Left Side */}
@@ -47,7 +30,7 @@ const Header = ({
           <Menu size={22} />
         </Button>
 
-        <div className="relative hidden w-64 items-center sm:flex md:w-80">
+        <div className="relative hidden w-64 items-center sm:flex md:w-70">
           <Search
             className="absolute left-3 cursor-pointer text-slate-500"
             size={16}

@@ -3,21 +3,21 @@ import { productLegendConfigs } from "../../lib/data.js";
 
 const ProductLegend = ({ activeProduct }) => {
   const config = productLegendConfigs[activeProduct];
-  
+
   return (
     <>
       {config && (
-        <div className="absolute w-16 p-2 duration-300 border shadow-2xl animate-in fade-in slide-in-from-right-2 right-2 bottom-16 z-1000 rounded-xl border-slate-200 bg-white/95 backdrop-blur-md md:right-4 md:bottom-10 md:w-20 md:p-3 dark:border-slate-800 dark:bg-slate-900/95">
+        <div className="animate-in fade-in slide-in-from-right-2 absolute right-2 bottom-5 z-1000 w-14 rounded-xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-md duration-300 md:right-4 md:bottom-8 md:w-16 md:p-2.5 dark:border-slate-800 dark:bg-slate-900/90">
           {/* Header - Chỉ hiển thị đơn vị */}
-          <div className="flex flex-col items-center gap-4 pb-1 border-b border-slate-100 dark:border-slate-800">
-            <span className="text-[14px] font-bold text-slate-500 dark:text-slate-400">
+          <div className="flex flex-col items-center gap-2 pb-2 mb-2 border-b border-slate-200/50 dark:border-slate-700/50">
+            <span className="text-[13px] font-black tracking-tighter text-slate-400 dark:text-slate-500">
               {config.unit}
             </span>
 
-            <div className="flex items-stretch gap-1 h-45 md:h-82">
+            <div className="flex items-stretch h-48 gap-2 md:h-64">
               {/* Color Bar Gradient */}
               <div
-                className="w-3 overflow-hidden border shadow-inner shrink-0 border-black/5 md:w-4 dark:border-white/5"
+                className="w-2.5 shrink-0 overflow-hidden rounded-sm border border-black/5 shadow-inner md:w-3 dark:border-white/10"
                 style={{
                   background: `linear-gradient(to top, ${config.steps.map((s) => s.color).join(",")})`,
                 }}
@@ -33,12 +33,11 @@ const ProductLegend = ({ activeProduct }) => {
                   return (
                     <div
                       key={i}
-                      className="flex items-center h-0 gap-1 leading-none"
+                      className="flex items-center h-px leading-none"
                     >
                       {showLabel && (
                         <>
-                          <div className="w-1 h-px shrink-0 bg-slate-200 dark:bg-slate-700" />
-                          <span className="text-[8px] font-bold text-slate-500 tabular-nums md:text-[12px] dark:text-slate-400">
+                          <span className="text-[9px] font-bold text-slate-500 tabular-nums md:text-[11px] dark:text-slate-400">
                             {step.value}
                           </span>
                         </>

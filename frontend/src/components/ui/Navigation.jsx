@@ -83,7 +83,7 @@ const Navigation = ({ isSidebarOpen, isMobileMenuOpen }) => {
                             ? "cursor-not-allowed opacity-40 grayscale"
                             : selected.name === opt.name
                               ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400"
-                              : "text-gray-500 hover:bg-gray-50 dark:text-slate-400 dark:hover:bg-slate-800"
+                              : "text-gray-500 hover:bg-gray-50 dark:text-slate-400 dark:hover:bg-slate-600"
                         } `}
                       >
                         <span className="flex-1 text-xs font-medium text-left whitespace-nowrap">
