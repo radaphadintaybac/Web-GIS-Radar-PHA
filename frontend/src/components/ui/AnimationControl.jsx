@@ -9,12 +9,23 @@ import {
   ChevronDown,
 } from "lucide-react";
 import formatTime from "../../lib/formatTime.js";
+import L from "leaflet";
 
 const AnimationControl = ({ timeline, setTimeline }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const dropdownRef = useRef(null);
   const animationRef = useRef(null);
+  const containerRef = useRef(null);
+
+  // Ngăn lan truyền sự kiện click/scroll xuống bản đồ Leaflet
+  useEffect(() => {
+    const el = containerRef.current;
+    if (el) {
+      L.DomEvent.disableClickPropagation(el);
+      L.DomEvent.disableScrollPropagation(el);
+    }
+  }, []);
 
   // Logic chạy Animation
   useEffect(() => {
@@ -61,7 +72,10 @@ const AnimationControl = ({ timeline, setTimeline }) => {
     }));
   };
   return (
-    <div className="absolute top-3 left-3 right-3 z-1000 sm:left-auto sm:right-4 sm:w-62 md:top-4 md:w-70">
+    <div
+      ref={containerRef}
+      className="absolute top-3 left-3 right-3 z-1000 sm:left-auto sm:right-4 sm:w-62 md:top-4 md:w-70"
+    >
       <div className="p-2 border shadow-2xl rounded-2xl border-slate-200 bg-white/90 backdrop-blur-md md:rounded-3xl md:p-3 dark:border-slate-700 dark:bg-slate-900/90">
         {/* Dropdown chọn thời gian */}
         <div className="relative mb-2 md:mb-3" ref={dropdownRef}>

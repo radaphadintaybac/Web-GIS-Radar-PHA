@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-jakarta: "Plus Jakarta Sans", sans-serif;
 }
@@ -8,6 +9,12 @@
 @layer base {
   button {
     cursor: pointer;
+  }
+}
+
+@layer utilities {
+  .bg-radar-sweep {
+    background: conic-gradient(from 0deg, transparent 70%, rgba(59, 130, 246, 0.1) 80%, rgba(59, 130, 246, 0.8) 100%);
   }
 }
 
@@ -40,7 +47,7 @@
   border-radius: 12px;
   padding: 4px;
   /* Tăng cường đổ bóng và viền để nổi bật trên nền radar */
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   border: 1.5px solid rgba(255, 255, 255, 0.8);
 }
 
@@ -50,9 +57,11 @@
 
 /* Hỗ trợ Dark Mode cho Popup */
 .dark .custom-radar-popup .leaflet-popup-content-wrapper {
-  background-color: #1e293b; /* slate-900 */
+  background-color: color-mix(in oklab, var(--color-slate-900) 90%, transparent);
+  /* slate-900 */
   color: #f1f5f9;
-  border: 1px solid #334155; /* slate-700 */
+  border: 1px solid #334155;
+  /* slate-700 */
 }
 
 .dark .custom-radar-popup .leaflet-popup-tip {

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useMemo } from "react";
-import { defaultSelections } from "../../lib/data.js";
+import { defaultSelections } from "../lib/config/dropdownConfigs.js";
 
 const SelectionContext = createContext();
 
@@ -11,7 +11,6 @@ export const SelectionProvider = ({ children }) => {
   return (
     <SelectionContext.Provider value={value}>
       {children}
-      {console.log("render Selection-context")}
     </SelectionContext.Provider>
   );
 };
