@@ -1,13 +1,27 @@
-import React from "react";
-import { productLegendConfigs } from "../../lib/data.js";
+import React, { useEffect, useRef } from "react";
+import { productLegendConfigs } from "../../lib/config/legendConfigs.js";
+import L from "leaflet";
 
 const ProductLegend = ({ activeProduct }) => {
   const config = productLegendConfigs[activeProduct];
+  const containerRef = useRef(null);
+
+  // Ngăn lan truyền sự kiện click/scroll xuống bản đồ Leaflet
+  useEffect(() => {
+    const el = containerRef.current;
+    if (el) {
+      L.DomEvent.disableClickPropagation(el);
+      L.DomEvent.disableScrollPropagation(el);
+    }
+  }, [config]);
 
   return (
     <>
       {config && (
-        <div className="animate-in fade-in slide-in-from-right-2 absolute right-2 bottom-5 z-1000 w-14 rounded-xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-md duration-300 md:right-4 md:bottom-8 md:w-16 md:p-2.5 dark:border-slate-800 dark:bg-slate-900/90">
+        <div
+          ref={containerRef}
+          className="animate-in fade-in slide-in-from-right-2 absolute right-2 bottom-5 z-1000 w-14 rounded-xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-md duration-300 md:right-4 md:bottom-5 md:w-16 md:p-2.5 dark:border-slate-800 dark:bg-slate-900/90"
+        >
           {/* Header - Chỉ hiển thị đơn vị */}
           <div className="flex flex-col items-center gap-2 pb-2 mb-2 border-b border-slate-200/50 dark:border-slate-700/50">
             <span className="text-[13px] font-black tracking-tighter text-slate-400 dark:text-slate-500">

@@ -1,7 +1,7 @@
 import React from "react";
 import { X } from "lucide-react";
 import LogoImg from "../../assets/logoImg.png";
-import Button from "./Button";
+
 
 const Logo = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
   return (
@@ -16,12 +16,12 @@ const Logo = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
         </span>
       </h1>
 
-      <Button
+      <button
         className="text-slate-400 transition-colors hover:text-gray-900 md:hidden dark:hover:text-white"
         onClick={() => setIsMobileMenuOpen(false)}
       >
         <X size={22} />
-      </Button>
+      </button>
     </div>
   );
 };

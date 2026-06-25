@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import DashBoard from "./pages/DashBoard";
 import NotFound from "./pages/NotFound";
+
 function App() {
   return (
     <>

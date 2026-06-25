@@ -1,29 +1,21 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { WMSTileLayer } from "react-leaflet";
 import L from "leaflet";
-import { useSelection } from "../context/SelectionContext";
 import AnimationControl from "../ui/AnimationControl";
-import ProductLegend from "./ProductLegend";
-import GetMapInfoHandler from "../handler/GetMapInfoHandler";
+import ProductLegend from "../ui/ProductLegend";
+import GetMapInfoHandler from "./GetMapInfoHandler";
+import { GEOSERVER_WMSC_URL, API_BASE_URL } from "../../lib/constants";
 
-// Sử dụng .memo để tránh parent render
-const ProductLayer = React.memo(() => {
-  const { selections } = useSelection();
-  const productName = selections.products.name;
-
-  // Sử dụng useMemo để đảm bảo ProductLayerContent chỉ render lại khi sản phẩm thực sự thay đổi
-  return useMemo(
-    () => <ProductLayerContent key={productName} product={productName} />,
-    [productName],
-  );
-});
-
+/**
+ * Nội dung layer sản phẩm radar: kết nối SSE, quản lý timeline,
+ * và render WMSTileLayer + các UI control liên quan.
+ */
 const ProductLayerContent = ({ product }) => {
   const [timeline, setTimeline] = useState({ list: [], index: 0 });
 
   useEffect(() => {
     const eventSource = new EventSource(
-      `http://localhost:5001/api/time?product=${product}`,
+      `${API_BASE_URL}/time?product=${product}`,
     );
 
     eventSource.onmessage = (event) => {
@@ -39,7 +31,6 @@ const ProductLayerContent = ({ product }) => {
         }
         // Trường hợp 2: Nhận cập nhật mốc thời gian mới duy nhất
         else if (data.newTimestamp) {
-          console.log(`Cập nhật mốc mới cho [${product}]:`, data.newTimestamp);
           setTimeline((prev) => {
             if (prev.list.includes(data.newTimestamp)) return prev;
 
@@ -74,10 +65,9 @@ const ProductLayerContent = ({ product }) => {
 
   return (
     <>
-      {console.log(`[RENDER] ProductLayerContent for: ${product}`)}
       <WMSTileLayer
         key={`${product}-${timeline.list[timeline.index]}`}
-        url="https://radarphadin.com.vn/geoserver/radar/gwc/service/wms"
+        url={GEOSERVER_WMSC_URL}
         params={{
           layers: `radar:${product.toLowerCase()}_mosaic_index`,
           format: "image/png",
@@ -89,12 +79,10 @@ const ProductLayerContent = ({ product }) => {
         }}
       />
       <GetMapInfoHandler timeline={timeline} />
-
       <AnimationControl timeline={timeline} setTimeline={setTimeline} />
-
       <ProductLegend activeProduct={product} />
     </>
   );
 };
 
-export default ProductLayer;
+export default ProductLayerContent;

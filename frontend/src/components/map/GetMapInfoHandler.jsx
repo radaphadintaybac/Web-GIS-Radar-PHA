@@ -1,9 +1,11 @@
 import { useEffect } from "react";
-import { GeoJSON, useMapEvents } from "react-leaflet";
+import { useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useSelection } from "../context/SelectionContext";
-import { productLegendConfigs, dropdownConfigs } from "../../lib/data";
+import { useSelection } from "../../context/SelectionContext";
+import { productLegendConfigs } from "../../lib/config/legendConfigs";
+import { dropdownConfigs } from "../../lib/config/dropdownConfigs";
+import { GEOSERVER_WMS_URL } from "../../lib/constants";
 
 /**
  * Component xử lý lấy thông tin thuộc tính (GetFeatureInfo) khi click vào bản đồ
@@ -26,6 +28,7 @@ const GetMapInfoHandler = ({ timeline }) => {
           : "radar:new_north_vietnam_2025_districts";
 
       const productLayer = `radar:${activeProduct.toLowerCase()}_mosaic_index`;
+
       // 1. Lấy tọa độ 2 điểm góc dưới-trái và trên-phải (hệ 4326)
       const southWest = bounds.getSouthWest();
       const northEast = bounds.getNorthEast();
@@ -54,7 +57,7 @@ const GetMapInfoHandler = ({ timeline }) => {
         y: Math.round(point.y),
       };
 
-      const url = `https://radarphadin.com.vn/geoserver/radar/wms?${new URLSearchParams(params).toString()}`;
+      const url = `${GEOSERVER_WMS_URL}?${new URLSearchParams(params).toString()}`;
 
       try {
         const response = await fetch(url);
@@ -99,7 +102,7 @@ const GetMapInfoHandler = ({ timeline }) => {
             const formattedValue =
               value != null ? Number(value).toFixed(1) : "0.0";
             content += `
-              <div class="mt-1 flex justify-center items-baseline gap-1 dark:border-slate-800">
+              <div class="mt-1 flex justify-center items-baseline gap-1">
                 <span class="text-[15px] font-black text-indigo-700">${formattedValue}</span>
                 <span class="text-[13px] font-bold text-slate-400 dark:text-slate-500 tracking-tight">${unitProduct}</span>
               </div>
@@ -111,7 +114,7 @@ const GetMapInfoHandler = ({ timeline }) => {
               minWidth: 150,
               className: "custom-radar-popup",
               // Khoảng cách an toàn để không bị che bởi UI (Top: 80px, Bottom: 100px)
-              autoPanPadding: [20, 100], 
+              autoPanPadding: [20, 100],
             })
               .setLatLng(e.latlng)
               .setContent(`<div class="flex flex-col">${content}</div>`)

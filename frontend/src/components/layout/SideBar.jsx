@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { LogOut } from "lucide-react";
-import Navigation from "./ui/Navigation";
-import Logo from "./ui/Logo";
+import Navigation from "../ui/Navigation";
+import Logo from "../ui/Logo";
 
 const SideBar = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
   return (
@@ -23,7 +23,6 @@ const SideBar = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
           setIsMobileMenuOpen={setIsMobileMenuOpen}
         />
         {/* Navigation */}
-        {console.log("render sidebar")}
         <Navigation
           isSidebarOpen={isSidebarOpen}
           isMobileMenuOpen={isMobileMenuOpen}

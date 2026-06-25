@@ -1,15 +1,17 @@
-import { MapContainer, TileLayer, ScaleControl, Pane } from "react-leaflet";
+import { MapContainer, TileLayer, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import ProductLayer from "./ui/ProductLayer";
-import { useSelection } from "./context/SelectionContext";
+import ProductLayer from "./ProductLayer";
+import { useSelection } from "../../context/SelectionContext";
+import { useTheme } from "../../context/ThemeContext";
+import { GEOSERVER_WMTS_URL } from "../../lib/constants";
+import { boundsNorthVN } from "../../lib/constants";
 
-const boundsNorthVN = L.latLngBounds([17.7, 101.5], [25.2, 108.0]);
-
-const MainContent = ({ isDarkMode }) => {
+const MapView = () => {
   const { selections } = useSelection();
+  const { isDarkMode } = useTheme();
 
   const selectedRegion = selections.region.name;
+  const themeKey = isDarkMode ? "dark" : "light";
 
   return (
     <main className="z-30 flex min-h-0 w-full flex-1 overflow-hidden">
@@ -25,30 +27,30 @@ const MainContent = ({ isDarkMode }) => {
         scrollWheelZoom={true}
         className="h-full w-full cursor-pointer!"
         zoomControl={false}
+        attributionControl={false}
       >
-        {/* <ZoomControl position="topright" /> */}
-        <ScaleControl position="bottomleft" />
-
         <Pane name="Provinces2" style={{ zIndex: 550 }} />
         <Pane name="paneRadar" style={{ zIndex: 600 }} />
         <Pane name="paneProvinces" style={{ zIndex: 660 }} />
         <Pane name="paneDistricts" style={{ zIndex: 650 }} />
 
+        {/* Base Layer */}
         <TileLayer
-          key={`layer-base-${isDarkMode ? "dark" : "light"}`}
+          key={`layer-base-${themeKey}`}
           url={`https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_${isDarkMode ? "Dark" : "Light"}_Gray_Base/MapServer/tile/{z}/{y}/{x}`}
         />
 
+        {/* North Viet Nam Provinces Mask Layer */}
         <TileLayer
-          key="layer-provinces-mask"
-          url="https://radarphadin.com.vn/geoserver/radar/gwc/service/tms/1.0.0/radar:new_north_vietnam_2025_provinces@EPSG:3857@png/{z}/{x}/{y}.png"
+          key={`${themeKey}-provinces-mask`}
+          url={`${GEOSERVER_WMTS_URL}?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=radar:new_north_vietnam_2025_provinces&STYLE=radar:${themeKey}-provinces-mask&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png`}
           pane="Provinces2"
-          tms={true}
+          transparent={true}
         />
 
         <TileLayer
-          key="layer-provinces-boundary"
-          url="https://radarphadin.com.vn/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=radar:new_north_vietnam_2025_provinces&STYLE=radar:province_style&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png"
+          key={`${themeKey}_provinces_style`}
+          url={`${GEOSERVER_WMTS_URL}?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=radar:new_north_vietnam_2025_provinces&STYLE=radar:${themeKey}_province_style&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png`}
           pane="paneProvinces"
           transparent={true}
         />
@@ -56,7 +58,7 @@ const MainContent = ({ isDarkMode }) => {
         {["Cấp xã", "Điểm dự báo"].includes(selectedRegion) && (
           <TileLayer
             key={selectedRegion}
-            url={`https://radarphadin.com.vn/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=radar:${
+            url={`${GEOSERVER_WMTS_URL}?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=radar:${
               selectedRegion === "Cấp xã"
                 ? "new_north_vietnam_2025_districts"
                 : "new_merge_districts_2025"
@@ -69,12 +71,12 @@ const MainContent = ({ isDarkMode }) => {
             transparent={true}
           />
         )}
-        {console.log("main-content render")}
-        {/* Thêm key cố định để tránh unmount khi các layer tĩnh thay đổi cấu trúc */}
+
+        {/* Key cố định để tránh unmount khi các layer tĩnh thay đổi cấu trúc */}
         <ProductLayer key="radar-product-layer" />
       </MapContainer>
     </main>
   );
 };
 
-export default MainContent;
+export default MapView;
