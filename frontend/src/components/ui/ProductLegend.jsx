@@ -20,15 +20,15 @@ const ProductLegend = ({ activeProduct }) => {
       {config && (
         <div
           ref={containerRef}
-          className="animate-in fade-in slide-in-from-right-2 absolute right-2 bottom-5 z-1000 w-14 rounded-xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-md duration-300 md:right-4 md:bottom-5 md:w-16 md:p-2.5 dark:border-slate-800 dark:bg-slate-900/90"
+          className="animate-in fade-in slide-in-from-right-2 absolute bottom-5 left-2 z-1000 w-14 rounded-xl border border-slate-200 bg-white/90 p-2 shadow-2xl backdrop-blur-md duration-300 md:right-4 md:bottom-5 md:left-auto md:w-16 md:p-2.5 dark:border-slate-800 dark:bg-slate-900/90"
         >
-          {/* Header - Chỉ hiển thị đơn vị */}
-          <div className="flex flex-col items-center gap-2 pb-2 mb-2 border-b border-slate-200/50 dark:border-slate-700/50">
+          {/* Header  */}
+          <div className="mb-2 flex flex-col items-center gap-2 border-b border-slate-200/50 pb-2 dark:border-slate-700/50">
             <span className="text-[13px] font-black tracking-tighter text-slate-400 dark:text-slate-500">
               {config.unit}
             </span>
 
-            <div className="flex items-stretch h-48 gap-2 md:h-64">
+            <div className="flex h-48 items-stretch gap-2 md:h-64">
               {/* Color Bar Gradient */}
               <div
                 className="w-2.5 shrink-0 overflow-hidden rounded-sm border border-black/5 shadow-inner md:w-3 dark:border-white/10"
@@ -47,7 +47,7 @@ const ProductLegend = ({ activeProduct }) => {
                   return (
                     <div
                       key={i}
-                      className="flex items-center h-px leading-none"
+                      className="flex h-px items-center leading-none"
                     >
                       {showLabel && (
                         <>

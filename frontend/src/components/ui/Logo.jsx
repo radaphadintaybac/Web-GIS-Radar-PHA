@@ -2,7 +2,6 @@ import React from "react";
 import { X } from "lucide-react";
 import LogoImg from "../../assets/logoImg.png";
 
-
 const Logo = ({ isSidebarOpen, isMobileMenuOpen, setIsMobileMenuOpen }) => {
   return (
     <div className="flex h-17 shrink-0 items-center justify-between border-b border-gray-100 px-1 md:justify-normal md:gap-3 dark:border-slate-800">
