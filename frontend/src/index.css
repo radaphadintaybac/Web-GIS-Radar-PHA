@@ -76,3 +76,19 @@
 .dark .custom-radar-popup .leaflet-popup-tip {
   background-color: #1e293b;
 }
+
+/* Tooltip cho trạm ra đa */
+.station-tooltip {
+  font-family: var(--font-jakarta) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  padding: 4px 10px !important;
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.15) !important;
+  background: white !important;
+}
+
+.dark .station-tooltip {
+  background: #1e293b !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  color: #e2e8f0 !important;
+}

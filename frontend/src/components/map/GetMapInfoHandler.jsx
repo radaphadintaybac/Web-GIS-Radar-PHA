@@ -4,16 +4,16 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useSelection } from "../../context/SelectionContext";
 import { productLegendConfigs } from "../../lib/config/legendConfigs";
-import { dropdownConfigs } from "../../lib/config/dropdownConfigs";
+// import { dropdownConfigs } from "../../lib/config/dropdownConfigs";
 import { GEOSERVER_WMS_URL } from "../../lib/constants";
 
 /**
  * Component xử lý lấy thông tin thuộc tính (GetFeatureInfo) khi click vào bản đồ
  */
 const GetMapInfoHandler = ({ timeline }) => {
-  const { selections } = useSelection();
+  const { selections, layerVisibility } = useSelection();
   const activeProduct = selections.products.name;
-  const activeLayer = selections.region.name;
+  // const activeLayer = selections.region.name;
   const unitProduct = productLegendConfigs[activeProduct]?.unit || "";
   const currentTime = timeline?.list[timeline?.index];
 
@@ -21,12 +21,10 @@ const GetMapInfoHandler = ({ timeline }) => {
     click: async (e) => {
       const size = map.getSize();
       const point = map.latLngToContainerPoint(e.latlng);
-      console.log(e.latlng);
       const bounds = map.getBounds();
-      const districtsLayer =
-        activeLayer === dropdownConfigs[2].options[2].name
-          ? "radar:new_merge_districts_2025"
-          : "radar:new_north_vietnam_2025_districts";
+      const districtsLayer = layerVisibility.mergeDistricts
+        ? "radar:new_merge_districts_2025"
+        : "radar:new_north_vietnam_2025_districts";
 
       const productLayer = `radar:${activeProduct.toLowerCase()}_mosaic_index`;
 
@@ -135,7 +133,7 @@ const GetMapInfoHandler = ({ timeline }) => {
     return () => {
       map.closePopup();
     };
-  }, [map, activeProduct, activeLayer, currentTime]);
+  }, [map, activeProduct, currentTime]);
 
   return null;
 };
