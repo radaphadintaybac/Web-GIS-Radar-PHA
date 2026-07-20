@@ -31,8 +31,9 @@ const radarStations =
 const MapView = () => {
   const { selections, layerVisibility, setLayerVisibility } = useSelection();
   const { isDarkMode } = useTheme();
+  // ** mức zoom */
   const [zoomLevel, setZoomLevel] = useState(7);
-
+  // ** dd */
   const selectedRegion = selections.region.name;
 
   const themeKey = isDarkMode ? "dark" : "light";
@@ -130,15 +131,11 @@ const MapView = () => {
         ))}
       {/* === Merger District Layer (toggle) === */}
       {layerVisibility.mergeDistricts && (
-        <WMSTileLayer
+        <TileLayer
           key="merge-districts-layer"
-          url={GEOSERVER_WMS_URL}
-          layers="radar:new_merge_districts_2025"
-          styles="radar:merge_district_style"
-          format="image/png"
+          url={`${GEOSERVER_WMTS_URL}?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=radar:new_merge_districts_2025&STYLE=radar:merge_district_style&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png`}
+          pane="paneDistricts"
           transparent={true}
-          version="1.1.1"
-          pane="paneMergeDistricts"
         />
       )}
       <ProductLayer key="radar-product-layer" />
